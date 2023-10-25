@@ -16,13 +16,13 @@ if (!fs.existsSync(filepath)) {
  //ini untuk menyimpan data yang telah di input
  const simpankontak = (nama,hp,email) => {
     const contact = {nama,hp,email};
-
     const file = fs.readFileSync('data/contacts.json', 'utf-8');
     const contacts = JSON.parse(file);
-    
-    const duplikatNama =contacts.find((contac) => contac.nama === Nama);
-    return false;
 
+    const duplikatNama =contacts.find((contac) => contac.nama === nama);
+    if (duplikatNama){
+        console.log('Nama yang anda masukan sudah terdaftar! Silahkan masukan nama lain!')
+        return false;
     }
     
      //cek no telepon
@@ -30,7 +30,7 @@ if (!fs.existsSync(filepath)) {
         if(!validator.isMobilePhone(hp, 'id-ID')){
             console.log('nomor yang anda masukan salah!')
             return false;
-          }
+        }
     }
     //cek email
     if (email){
@@ -43,5 +43,6 @@ if (!fs.existsSync(filepath)) {
     fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
     
     console.log ('data sudah berhasil disimpan!')
+}
 
 module.exports ={simpankontak}
