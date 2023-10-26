@@ -1,30 +1,68 @@
-const app = require("./app");
-const validator = require("validator");
-let nama, mobile, email; //deklarasi variabel nama, mobile, dan email
+const argv = require("yargs");
+const yargs = require('yargs');
+const tugas9 = require ('./tugas9');
+    yargs.command({
+        command: 'add',
+        describe: 'add new contact',
+        builder:{
+            nama:{
+                describe: 'Contact Name',
+                demandOption: true,
+                type: 'string',
+            },
+            hp:{
+                describe: 'contact mobile phone number',
+                demandOption: true,
+                type: 'string',
+            },
+            email:{
+                describe: 'contact email',
+                demandOption: false,
+                type: 'string',
+            }
+        },
+        handler(argv){
+            tugas9.simpankontak(argv.nama, argv.hp, argv.email)
+            }
+        });
 
-// menggunakan async await
-const main = async () => {
-  nama = await app.question("What is your name? ");
+        yargs.command({
+            command: 'list',
+            describe: 'list contact',
+            handler(argv){
+            tugas9.listcontact()
+            }
+        })
 
-  // validasi phone number
-  while (true) {
-    mobile = await app.question("Your phone number is? ");
-    if (validator.isMobilePhone(mobile, "id-ID")) {
-      break; //akan keluar jika tidak valid
-    } else {
-      console.log("Phone number is invalid. Please Input again!");
-    }
-  }
-  // validasi email
-  while (true) {
-    email = await app.question("Your email is? ");
-    if (validator.isEmail(email)) {
-      break;
-    } else {
-      console.log("Email is invalid. Please input again!");
-    }
-  }
-  // menyimpan sebuah inputan nama, mobile, dan email
-  app.saveData(nama, mobile, email);
-};
-main();
+        yargs.command({
+            command: 'detail',
+            describe: 'detail contact',
+            builder:{
+                nama:{
+                    describe: 'Contact Name',
+                    demandOption: true,
+                    type: 'string'
+                }
+            },
+            handler(argv){
+            tugas9.detailcontact(argv.nama)
+            }
+            
+        })
+        
+        yargs.command({
+            command: 'delete',
+            describe: 'delete contact',
+            builder:{
+                nama:{
+                    describe: 'Contact Name',
+                    demandOption: true,
+                    type: 'string'
+                }
+            },
+            handler(argv){
+            tugas9.deletecontact(argv.nama)
+            }
+            
+        })
+yargs.parse();

@@ -13,11 +13,16 @@ if (!fs.existsSync(filepath)) {
     fs.writeFileSync(filepath, '[]', 'utf-8')
 }
 
+const loadcontact = (nama, hp, email) =>{
+    const file = fs.readFileSync('data/contacts.json', 'utf-8');
+    const contacts = JSON.parse(file);
+    return contacts;
+}
+
  //ini untuk menyimpan data yang telah di input
  const simpankontak = (nama,hp,email) => {
     const contact = {nama,hp,email};
-    const file = fs.readFileSync('data/contacts.json', 'utf-8');
-    const contacts = JSON.parse(file);
+    const contacts = loadcontact()
 
     const duplikatNama =contacts.find((contac) => contac.nama === nama);
     if (duplikatNama){
@@ -45,4 +50,38 @@ if (!fs.existsSync(filepath)) {
     console.log ('data sudah berhasil disimpan!')
 }
 
-module.exports ={simpankontak}
+const listcontact = () => {
+    const contacts = loadcontact()
+    console.log ('list contact:')
+    contacts.forEach((contact, i) => {
+        console.log (`${i+1}. ${contact.nama} -${contact.hp}`)
+    })
+}
+
+const detailcontact = (nama) => {
+const contacts = loadcontact()
+const contact =contacts.find((contact) => contact.nama === nama);
+if (!contact){
+    console.log(`${nama} ini tidak terdaftar!`)
+    return false;
+}
+console.log(contact.nama)
+console.log(contact.hp)
+if(contact.email){
+    console.log(contact.email)
+}
+}
+
+const deletecontact = (nama) => {
+    const contacts = loadcontact ()
+    const newcontact = contacts.filter(
+        (contact) => contact.nama !== nama
+    )
+    if(contacts.length === newcontact.length) {
+        console.log(`${nama} tidak terdaftar!`)
+        return false;
+    }
+    fs.writeFileSync('data/contacts.json', JSON.stringify(newcontact));
+    console.log(`${nama} telah dihapus!`)
+}
+module.exports ={simpankontak,listcontact,detailcontact,deletecontact}
